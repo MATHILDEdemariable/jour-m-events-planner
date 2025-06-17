@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Users, Calendar, FileText, Settings, Heart, ArrowLeft } from 'lucide-react';
+import { Settings, Users, MapPin, Calendar, FileText, Share2, HelpCircle, Globe, LogOut, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import PeopleManagement from '@/components/admin/PeopleManagement';
 import PlanningManagement from '@/components/admin/PlanningManagement';
@@ -13,15 +13,8 @@ import EventConfiguration from '@/components/admin/EventConfiguration';
 import useAdminData from '@/hooks/useAdminData';
 
 const AdminPortal = () => {
-  const [activeTab, setActiveTab] = useState('people');
+  const [activeTab, setActiveTab] = useState('config');
   const { people, vendors, tasks, documents, eventConfig } = useAdminData();
-
-  const stats = [
-    { label: 'Équipe personnelle', value: people.length, icon: Users, color: 'bg-blue-500' },
-    { label: 'Prestataires', value: vendors.length, icon: Users, color: 'bg-green-500' },
-    { label: 'Tâches planifiées', value: tasks.length, icon: Calendar, color: 'bg-purple-500' },
-    { label: 'Documents', value: documents.length, icon: FileText, color: 'bg-pink-500' },
-  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -37,63 +30,89 @@ const AdminPortal = () => {
                 </Button>
               </Link>
               <div className="flex items-center gap-2">
-                <Heart className="w-6 h-6 text-pink-500" />
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  Jour-J Admin
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Test - Admin
                 </h1>
-                <Badge variant="secondary">par Mariable</Badge>
               </div>
             </div>
-            <div className="text-sm text-gray-600">
-              {eventConfig.name} - {new Date(eventConfig.date).toLocaleDateString('fr-FR')}
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="sm">
+                <HelpCircle className="w-4 h-4 mr-2" />
+                Aide
+              </Button>
+              <Button variant="ghost" size="sm">
+                <Globe className="w-4 h-4 mr-2" />
+                Langue
+              </Button>
+              <Button variant="ghost" size="sm">
+                <LogOut className="w-4 h-4 mr-2" />
+                Déconnexion
+              </Button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Stats Overview */}
       <div className="container mx-auto px-4 py-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          {stats.map((stat, index) => (
-            <Card key={index} className="border-0 shadow-sm">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg ${stat.color}`}>
-                    <stat.icon className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold">{stat.value}</p>
-                    <p className="text-sm text-gray-600">{stat.label}</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))} 
-        </div>
-
         {/* Main Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-flex">
+          <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-flex bg-white border shadow-sm">
+            <TabsTrigger value="config" className="flex items-center gap-2">
+              <Settings className="w-4 h-4" />
+              <span className="hidden sm:inline">Configuration</span>
+            </TabsTrigger>
             <TabsTrigger value="people" className="flex items-center gap-2">
               <Users className="w-4 h-4" />
-              <span className="hidden sm:inline">Équipe</span>
+              <span className="hidden sm:inline">Personnes</span>
+            </TabsTrigger>
+            <TabsTrigger value="vendors" className="flex items-center gap-2">
+              <MapPin className="w-4 h-4" />
+              <span className="hidden sm:inline">Prestataires</span>
             </TabsTrigger>
             <TabsTrigger value="planning" className="flex items-center gap-2">
               <Calendar className="w-4 h-4" />
-              <span className="hidden sm:inline">Planning</span>
+              <span className="hidden sm:inline">Planning & Tâches</span>
             </TabsTrigger>
             <TabsTrigger value="documents" className="flex items-center gap-2">
               <FileText className="w-4 h-4" />
               <span className="hidden sm:inline">Documents</span>
             </TabsTrigger>
-            <TabsTrigger value="config" className="flex items-center gap-2">
-              <Settings className="w-4 h-4" />
-              <span className="hidden sm:inline">Config</span>
+            <TabsTrigger value="share" className="flex items-center gap-2">
+              <Share2 className="w-4 h-4" />
+              <span className="hidden sm:inline">Partage</span>
             </TabsTrigger>
           </TabsList>
 
+          <TabsContent value="config" className="space-y-6">
+            <EventConfiguration />
+          </TabsContent>
+
           <TabsContent value="people" className="space-y-6">
             <PeopleManagement />
+          </TabsContent>
+
+          <TabsContent value="vendors" className="space-y-6">
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold">Gestion des Prestataires</h2>
+                <Button>
+                  <MapPin className="w-4 h-4 mr-2" />
+                  Ajouter un prestataire
+                </Button>
+              </div>
+              
+              <Card className="bg-white">
+                <CardContent className="p-8 text-center">
+                  <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-600 mb-2">
+                    Gestion des prestataires
+                  </h3>
+                  <p className="text-gray-500">
+                    Ajoutez et gérez vos prestataires (lieux, traiteurs, photographes, etc.)
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
           <TabsContent value="planning" className="space-y-6">
@@ -104,8 +123,24 @@ const AdminPortal = () => {
             <DocumentManagement />
           </TabsContent>
 
-          <TabsContent value="config" className="space-y-6">
-            <EventConfiguration />
+          <TabsContent value="share" className="space-y-6">
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold">Partage et Collaboration</h2>
+              </div>
+              
+              <Card className="bg-white">
+                <CardContent className="p-8 text-center">
+                  <Share2 className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-600 mb-2">
+                    Fonctionnalités de partage
+                  </h3>
+                  <p className="text-gray-500">
+                    Partagez votre planning et vos documents avec votre équipe
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </div>
