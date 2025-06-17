@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { PersonMember, Vendor, Task, Document, EventConfig } from './useAdminData';
+import { useTeamSelection } from '@/contexts/TeamSelectionContext';
 
 const useTeamData = () => {
   const [people, setPeople] = useState<PersonMember[]>([]);
@@ -9,8 +10,8 @@ const useTeamData = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [eventConfig, setEventConfig] = useState<EventConfig | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedUser, setSelectedUser] = useState<string>('');
-  const [userType, setUserType] = useState<'person' | 'vendor'>('person');
+  
+  const { selectedPersonId, selectedTeamType } = useTeamSelection();
 
   // Load data from localStorage with auto-refresh
   const loadData = () => {
@@ -34,15 +35,6 @@ const useTeamData = () => {
     }
   };
 
-  // Load selected user from localStorage
-  useEffect(() => {
-    const savedUser = localStorage.getItem('jour-j-selected-user');
-    const savedUserType = localStorage.getItem('jour-j-user-type');
-    
-    if (savedUser) setSelectedUser(savedUser);
-    if (savedUserType) setUserType(savedUserType as 'person' | 'vendor');
-  }, []);
-
   // Initial load and auto-refresh every 30 seconds
   useEffect(() => {
     loadData();
@@ -50,51 +42,43 @@ const useTeamData = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Save user selection
-  const selectUser = (userId: string, type: 'person' | 'vendor') => {
-    setSelectedUser(userId);
-    setUserType(type);
-    localStorage.setItem('jour-j-selected-user', userId);
-    localStorage.setItem('jour-j-user-type', type);
-  };
-
   // Get tasks assigned to current user
   const getUserTasks = () => {
-    if (!selectedUser) return [];
+    if (!selectedPersonId) return [];
     
     return tasks.filter(task => {
-      if (userType === 'person') {
-        return task.assignedTo.includes(selectedUser);
+      if (selectedTeamType === 'personal') {
+        return task.assignedTo.includes(selectedPersonId);
       } else {
-        return task.assignedVendors.includes(selectedUser);
+        return task.assignedVendors.includes(selectedPersonId);
       }
     });
   };
 
   // Get documents assigned to current user
   const getUserDocuments = () => {
-    if (!selectedUser) return [];
+    if (!selectedPersonId) return [];
     
     return documents.filter(doc => {
       if (doc.permission === 'public') return true;
       if (doc.permission === 'team') return true;
       
-      if (userType === 'person') {
-        return doc.assignedTo.includes(selectedUser);
+      if (selectedTeamType === 'personal') {
+        return doc.assignedTo.includes(selectedPersonId);
       } else {
-        return doc.assignedVendors.includes(selectedUser);
+        return doc.assignedVendors.includes(selectedPersonId);
       }
     });
   };
 
   // Get current user info
   const getCurrentUser = () => {
-    if (!selectedUser) return null;
+    if (!selectedPersonId) return null;
     
-    if (userType === 'person') {
-      return people.find(p => p.id === selectedUser);
+    if (selectedTeamType === 'personal') {
+      return people.find(p => p.id === selectedPersonId);
     } else {
-      return vendors.find(v => v.id === selectedUser);
+      return vendors.find(v => v.id === selectedPersonId);
     }
   };
 
@@ -114,9 +98,8 @@ const useTeamData = () => {
     documents,
     eventConfig,
     loading,
-    selectedUser,
-    userType,
-    selectUser,
+    selectedUser: selectedPersonId,
+    userType: selectedTeamType,
     getUserTasks,
     getUserDocuments,
     getCurrentUser,

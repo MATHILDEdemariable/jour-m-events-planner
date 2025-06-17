@@ -1,11 +1,13 @@
 
-import { Card } from "@/components/ui/card";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Eye, Shield, LogOut } from "lucide-react";
+import { Shield, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
+import TeamAccessModal from "@/components/team/TeamAccessModal";
 
 const Index = () => {
+  const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-white flex flex-col">
       {/* Main Content */}
@@ -25,15 +27,13 @@ const Index = () => {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 mb-16">
-          <Link to="/team">
-            <Button 
-              size="lg" 
-              className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 text-lg font-medium flex items-center gap-3 min-w-[200px]"
-            >
-              <Eye className="w-5 h-5" />
-              Équipe
-            </Button>
-          </Link>
+          <Button 
+            size="lg" 
+            className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 text-lg font-medium flex items-center gap-3 min-w-[200px]"
+            onClick={() => setIsTeamModalOpen(true)}
+          >
+            👁️ Équipe
+          </Button>
           
           <Link to="/admin">
             <Button 
@@ -55,6 +55,12 @@ const Index = () => {
           Se déconnecter
         </Button>
       </div>
+
+      {/* Team Access Modal */}
+      <TeamAccessModal 
+        isOpen={isTeamModalOpen} 
+        onClose={() => setIsTeamModalOpen(false)} 
+      />
     </div>
   );
 };
