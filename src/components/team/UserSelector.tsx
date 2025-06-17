@@ -1,20 +1,24 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { User, MapPin } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useTeamSelection } from '@/contexts/TeamSelectionContext';
 import useTeamData from '@/hooks/useTeamData';
 
 const UserSelector = () => {
-  const { people, vendors, selectUser } = useTeamData();
+  const { people, vendors } = useTeamData();
+  const { setPersonId } = useTeamSelection();
+  const navigate = useNavigate();
   const [selectedType, setSelectedType] = useState<'person' | 'vendor'>('person');
   const [selectedId, setSelectedId] = useState<string>('');
 
   const handleConfirmSelection = () => {
     if (selectedId) {
-      selectUser(selectedId, selectedType);
+      setPersonId(selectedId);
+      navigate(`/dashboard/${selectedId}`);
     }
   };
 

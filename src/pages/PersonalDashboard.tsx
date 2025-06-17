@@ -39,6 +39,15 @@ const PersonalDashboard = () => {
   const completedTasks = userTasks.filter(task => task.status === 'completed');
   const progress = userTasks.length > 0 ? Math.round((completedTasks.length / userTasks.length) * 100) : 0;
 
+  // Type-safe way to get role/type
+  const getRoleOrType = () => {
+    if (selectedTeamType === 'personal') {
+      return (person as any).role;
+    } else {
+      return (person as any).type;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -54,9 +63,7 @@ const PersonalDashboard = () => {
               </Link>
               <div>
                 <h1 className="text-2xl font-bold">{person.name}</h1>
-                <p className="text-white/80">
-                  {selectedTeamType === 'personal' ? person.role : person.type}
-                </p>
+                <p className="text-white/80">{getRoleOrType()}</p>
               </div>
             </div>
             <Button 
@@ -150,7 +157,7 @@ const PersonalDashboard = () => {
                 <div key={task.id} className="flex items-center justify-between py-2 border-b last:border-b-0">
                   <div>
                     <p className="font-medium">{task.title}</p>
-                    <p className="text-sm text-gray-600">{task.time}</p>
+                    <p className="text-sm text-gray-600">{task.date}</p>
                   </div>
                   <Badge variant={task.status === 'completed' ? 'default' : 'secondary'}>
                     {task.status === 'completed' ? 'Terminé' : 'En cours'}
@@ -174,7 +181,7 @@ const PersonalDashboard = () => {
               {userDocuments.slice(0, 3).map((doc) => (
                 <div key={doc.id} className="flex items-center justify-between py-2 border-b last:border-b-0">
                   <div>
-                    <p className="font-medium">{doc.name}</p>
+                    <p className="font-medium">{doc.title}</p>
                     <p className="text-sm text-gray-600">{doc.category}</p>
                   </div>
                   <Badge variant="outline">{doc.type}</Badge>

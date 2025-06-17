@@ -111,7 +111,7 @@ const EventPortal = () => {
               <div>
                 <h2 className="text-xl font-semibold">{currentUser.name}</h2>
                 <p className="text-white/80">
-                  {userType === 'person' 
+                  {userType === 'personal' 
                     ? `Rôle: ${(currentUser as any).role}` 
                     : `Service: ${(currentUser as any).type}`
                   }
