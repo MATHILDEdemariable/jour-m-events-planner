@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -57,7 +56,7 @@ const PlanningTab = () => {
       .filter(Boolean);
     
     const vendorNames = task.assignedVendors
-      .map(id => vendors.find(v => v.id === v)?.name)
+      .map(id => vendors.find(v => v.id === id)?.name)
       .filter(Boolean);
     
     return [...personNames, ...vendorNames];
