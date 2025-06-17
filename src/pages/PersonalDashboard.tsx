@@ -157,7 +157,7 @@ const PersonalDashboard = () => {
                 <div key={task.id} className="flex items-center justify-between py-2 border-b last:border-b-0">
                   <div>
                     <p className="font-medium">{task.title}</p>
-                    <p className="text-sm text-gray-600">{task.date}</p>
+                    <p className="text-sm text-gray-600">{task.startTime}</p>
                   </div>
                   <Badge variant={task.status === 'completed' ? 'default' : 'secondary'}>
                     {task.status === 'completed' ? 'Terminé' : 'En cours'}
